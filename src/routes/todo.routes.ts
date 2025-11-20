@@ -1,25 +1,24 @@
-
-import { Router } from 'express';
-import { TodoService } from '../services/todo.service';
+import { Router } from "express";
+import { TodoService } from "../services/todo.service";
 
 export function buildTodoRouter(service: TodoService): Router {
   const router = Router();
 
-  router.get('/', (_req, res) => {
+  router.get("/", (_req, res) => {
     res.json(service.list());
   });
 
-  router.post('/', (req, res) => {
+  router.post("/", (req, res) => {
     try {
       const { title } = req.body || {};
-      const todo = service.create(String(title ?? ''));
+      const todo = service.create(String(title ?? ""));
       res.status(201).json(todo);
     } catch (err: any) {
       res.status(400).json({ error: err.message });
     }
   });
 
-  router.patch('/:id/toggle', (req, res) => {
+  router.patch("/:id/toggle", (req, res) => {
     try {
       const { id } = req.params;
       const todo = service.toggle(id);
@@ -29,7 +28,7 @@ export function buildTodoRouter(service: TodoService): Router {
     }
   });
 
-  router.delete('/:id', (req, res) => {
+  router.delete("/:id", (req, res) => {
     try {
       const { id } = req.params;
       service.remove(id);
@@ -37,6 +36,10 @@ export function buildTodoRouter(service: TodoService): Router {
     } catch (err: any) {
       res.status(404).json({ error: err.message });
     }
+  });
+
+  router.get("/stats", (_req, res) => {
+    res.json(service.stats());
   });
 
   return router;

@@ -1,5 +1,6 @@
 import request from "supertest";
 import app from "../../src/app";
+import { title } from "process";
 
 describe("Todo API", () => {
   // Test de salud: verifica que el servidor responda correctamente
@@ -46,5 +47,21 @@ describe("Todo API", () => {
     const res = await request(app).post("/todos").send({ title: "a" });
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("error");
+  });
+
+  it("GET /todos/stats devuelve los totales", async () => {
+    // datos de prueba
+    await request(app).post("/todos").send({ title: "tareaone" });
+    const b = await request(app).post("/todos").send({ title: "tareatwo" });
+    await request(app).post("/todos").send({ title: "tareathree" });
+
+    // marcamos uno como completado
+    await request(app).patch(`/todos${b.body.id}/toggle`);
+
+    // consultamos stats
+    const res = await request(app).get("/todos/stats");
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ total: 3, completed: 1, pending: 2 });
   });
 });
