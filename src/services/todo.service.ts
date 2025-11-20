@@ -1,6 +1,5 @@
-
-import { randomUUID } from 'crypto';
-import { Todo, TodoId } from '../domain/todo';
+import { randomUUID } from "crypto";
+import { Todo, TodoId } from "../domain/todo";
 
 export class TodoService {
   private todos: Todo[] = [];
@@ -11,7 +10,7 @@ export class TodoService {
 
   create(title: string): Todo {
     if (!title || title.trim().length < 2) {
-      throw new Error('Title must have at least 2 chars');
+      throw new Error("Title must have at least 2 chars");
     }
     const todo: Todo = {
       id: randomUUID(),
@@ -24,19 +23,26 @@ export class TodoService {
   }
 
   toggle(id: TodoId): Todo {
-    const t = this.todos.find(x => x.id === id);
-    if (!t) throw new Error('Todo not found');
+    const t = this.todos.find((x) => x.id === id);
+    if (!t) throw new Error("Todo not found");
     t.completed = !t.completed;
     return t;
   }
 
   remove(id: TodoId): void {
     const prevLen = this.todos.length;
-    this.todos = this.todos.filter(x => x.id !== id);
-    if (this.todos.length === prevLen) throw new Error('Todo not found');
+    this.todos = this.todos.filter((x) => x.id !== id);
+    if (this.todos.length === prevLen) throw new Error("Todo not found");
   }
 
   clear(): void {
     this.todos = [];
+  }
+
+  stats() {
+    const total = this.todos.length;
+    const completed = this.todos.filter((t) => t.completed).length;
+    const pending = total - completed;
+    return { total, completed, pending };
   }
 }

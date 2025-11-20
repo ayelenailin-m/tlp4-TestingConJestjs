@@ -1,6 +1,5 @@
-
-import { TodoService } from '../../src/services/todo.service';
-describe('TodoService', () => {
+import { TodoService } from "../../src/services/todo.service";
+describe("TodoService", () => {
   let svc: TodoService;
 
   // beforeEach() se ejecuta antes de cada test.
@@ -11,33 +10,48 @@ describe('TodoService', () => {
 
   // it() define un caso de prueba individual.
   // Dentro escribimos lo que esperamos que haga el método.
-  it('crea un todo válido', () => {
-    const todo = svc.create('Aprender Jest');
+  it("crea un todo válido", () => {
+    const todo = svc.create("Aprender Jest");
     // expect() compara el resultado con lo esperado.
     expect(todo.id).toBeDefined(); // el id debe existir
-    expect(todo.title).toBe('Aprender Jest'); // el título debe coincidir
+    expect(todo.title).toBe("Aprender Jest"); // el título debe coincidir
     expect(todo.completed).toBe(false); // debe crearse como no completado
     expect(svc.list()).toHaveLength(1); // ahora hay un elemento
   });
 
-  it('lanza error si el título es corto', () => {
+  it("lanza error si el título es corto", () => {
     // expect(() => fn()).toThrow() espera un error con cierto mensaje
-    expect(() => svc.create('a')).toThrow('Title must have at least 2 chars');
+    expect(() => svc.create("a")).toThrow("Title must have at least 2 chars");
   });
 
-  it('toggle cambia el flag completed', () => {
-    const t = svc.create('Item');
+  it("toggle cambia el flag completed", () => {
+    const t = svc.create("Item");
     const toggled = svc.toggle(t.id);
     expect(toggled.completed).toBe(true);
   });
 
-  it('remove elimina por id', () => {
-    const t = svc.create('Borrar');
+  it("remove elimina por id", () => {
+    const t = svc.create("Borrar");
     svc.remove(t.id);
     expect(svc.list()).toHaveLength(0);
   });
 
-  it('remove lanza error si no existe', () => {
-    expect(() => svc.remove('nope')).toThrow('Todo not found');
+  it("remove lanza error si no existe", () => {
+    expect(() => svc.remove("nope")).toThrow("Todo not found");
+  });
+});
+
+describe("TodoService.stats", () => {
+  it("devuelve totales correctos (total, completed, pending)", () => {
+    const svc = new TodoService();
+
+    svc.create("tarea 1");
+    svc.create("tarea 2");
+    svc.create("tarea 3");
+    svc.toggle(svc.list()[1].id); // cambia el estado del segundo de la lista
+
+    const stats = svc.stats();
+
+    expect(stats).toEqual({ total: 3, completed: 1, pending: 2 });
   });
 });
