@@ -38,6 +38,13 @@ export function buildTodoRouter(service: TodoService): Router {
     }
   });
 
+  // para limpiar la lista
+  router.post("clear", (_req, res) => {
+    service.clear();
+    res.status(204).send();
+  });
+
+  // para obtener estadísticas
   router.get("/stats", (_req, res) => {
     res.json(service.stats());
   });

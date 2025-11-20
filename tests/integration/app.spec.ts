@@ -50,10 +50,18 @@ describe("Todo API", () => {
   });
 
   it("GET /todos/stats devuelve los totales", async () => {
+    // limpiamos primero
+    await request(app).post("/todos/clear");
+
+    // verificamos que esté vacio
+    const emptyRes = await request(app).get("/todos");
+    // debe estar vacío
+    expect(emptyRes.body).toEqual([]);
+
     // datos de prueba
-    await request(app).post("/todos").send({ title: "tareaone" });
-    const b = await request(app).post("/todos").send({ title: "tareatwo" });
-    await request(app).post("/todos").send({ title: "tareathree" });
+    await request(app).post("/todos").send({ title: "tareaOne" });
+    const b = await request(app).post("/todos").send({ title: "tareaTwo" });
+    await request(app).post("/todos").send({ title: "tareaThree" });
 
     // marcamos uno como completado
     await request(app).patch(`/todos${b.body.id}/toggle`);
